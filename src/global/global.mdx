@@ -1,0 +1,39 @@
+import { Canvas, Meta, Story } from '@storybook/addon-docs/blocks';
+
+<Meta title='Utils / styled / global' />
+
+# styled.global
+
+Синтаксический сахар над методом [createGlobalStyle](https://styled-components.com/docs/api#createglobalstyle) библиотеки `styled-components`.
+
+## Использование
+
+```
+const GlobalStyle = styled.global(...styles);
+
+<GlobalStyle />
+```
+
+## Пример
+
+> Используются стили только метода `css`, а остальные игнорируются.
+
+<Canvas className='canvas'>
+  <Story id='utils-styled-global--example' />
+</Canvas>
+
+эквивалент
+
+```tsx
+import { css } from '@styled-system/css';
+import { createGlobalStyle } from 'styled-components';
+
+const GlobalStyle = createGlobalStyle(
+  css({
+    body: {
+      border: '10px solid',
+      borderColor: 'dune',
+    },
+  }),
+);
+```

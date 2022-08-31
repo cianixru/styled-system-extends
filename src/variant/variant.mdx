@@ -1,0 +1,169 @@
+import { Canvas, Meta, Story } from '@storybook/addon-docs/blocks';
+
+<Meta title='Utils / styled / variant' />
+
+# styled.variant
+
+Синтаксический сахар над методом [variant](https://styled-system.com/variants) библиотеки `styled-system`.
+
+## Использование
+
+### Настройки варианта
+
+```tsx
+const variants = {};
+const variant = styled.variant(variants);
+const custom = styled.variant('customPropName', variants);
+
+const Block = styled('div', variant, custom);
+```
+
+### Настройки варианта на основе props компонента
+
+```tsx
+type VariantProps = { ... };
+
+const variants = {};
+const variant = styled.variant((props: VariantProps) => variants);
+const custom = styled.variant('customPropName', (props: VariantProps) => variants);
+
+const Block = styled('div', variant, custom);
+```
+
+## Возможности
+
+### Наименование prop по умолчанию
+
+#### Без использования props компонента
+
+<Canvas className='canvas'>
+  <Story id='utils-styled-variant--default-prop-name-without-props' />
+</Canvas>
+
+эквивалент
+
+```tsx
+import styled from 'styled-components';
+import { variant } from 'styled-system';
+
+import type { SystemStyleObject } from '@styled-system/css';
+
+type Variant = 'primary' | 'secondary';
+type BlockProps = {
+  variant: Variant;
+};
+
+const variants = variant<SystemStyleObject, Variant>({
+  variants: {
+    primary: { color: 'mangoTango' },
+    secondary: { color: 'turbo' },
+  },
+});
+
+const Block = styled.div<BlockProps>(variants);
+```
+
+#### С использованием props компонента
+
+<Canvas className='canvas'>
+  <Story id='utils-styled-variant--default-prop-name-with-props' />
+</Canvas>
+
+эквивалент
+
+```tsx
+import styled from 'styled-components';
+import { variant } from 'styled-system';
+
+import type { SystemStyleObject } from '@styled-system/css';
+
+type Variant = 'primary' | 'secondary';
+type BlockProps = {
+  isRight?: boolean;
+  variant: Variant;
+};
+
+const variants = ({ isRight }: BlockProps) => variant<SystemStyleObject, Variant>({
+  variants: {
+    left: {
+      textAlign: isRight ? 'right' : 'left',
+      color: 'mangoTango',
+    },
+    right: {
+      textAlign: isRight ? 'right' : 'left',
+      color: 'turbo',
+    },
+  },
+});
+
+const Block = styled.div<BlockProps>(variants);
+```
+
+### Пользовательское наименование prop
+
+#### Без использования props компонента
+
+<Canvas className='canvas'>
+  <Story id='utils-styled-variant--custom-prop-name-without-props' />
+</Canvas>
+
+эквивалент
+
+```tsx
+import styled from 'styled-components';
+import { variant } from 'styled-system';
+
+import type { SystemStyleObject } from '@styled-system/css';
+
+type Variant = 'primary' | 'secondary';
+type BlockProps = {
+  custom: Variant;
+};
+
+const variants = variant<SystemStyleObject, Variant>({
+  prop: 'custom',
+  variants: {
+    primary: { color: 'mangoTango' },
+    secondary: { color: 'turbo' },
+  },
+});
+
+const Block = styled.div<BlockProps>(variants);
+```
+
+#### С использованием props компонента
+
+<Canvas className='canvas'>
+  <Story id='utils-styled-variant--custom-prop-name-with-props' />
+</Canvas>
+
+эквивалент
+
+```tsx
+import styled from 'styled-components';
+import { variant } from 'styled-system';
+
+import type { SystemStyleObject } from '@styled-system/css';
+
+type Variant = 'primary' | 'secondary';
+type BlockProps = {
+  isRight?: boolean;
+  custom: Variant;
+};
+
+const variants = ({ isRight }: BlockProps) => variant<SystemStyleObject, Variant>({
+  prop: 'custom',
+  variants: {
+    left: {
+      textAlign: isRight ? 'right' : 'left',
+      color: 'mangoTango',
+    },
+    right: {
+      textAlign: isRight ? 'right' : 'left',
+      color: 'turbo',
+    },
+  },
+});
+
+const Block = styled.div<BlockProps>(variants);
+```

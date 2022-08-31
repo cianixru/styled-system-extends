@@ -1,0 +1,66 @@
+import { Canvas, Meta, Story } from '@storybook/addon-docs/blocks';
+
+<Meta title='Utils / styled / config' />
+
+# styled.withConfig
+
+Синтаксический сахар над методом `withConfig` библиотеки [styled-components](https://styled-components.com/).
+
+> Если `withConfig` будет вызван несколько раз, то будет применяться последняя конфигурация.
+
+## Использование
+
+```tsx
+type BlockProps = { ... };
+
+const config = styled.withConfig<BlockProps>({ ... });
+
+const Block = styled('div', config);
+```
+
+## Возможности
+
+### Собственные конфиги
+
+В данном примере запрещаются свойства (вкл. `children`).
+
+<Canvas className='canvas'>
+  <Story id='utils-styled-config--custom' />
+</Canvas>
+
+эквивалент
+
+```tsx
+import shouldForwardProp from '@styled-system/should-forward-prop';
+import styled from 'styled-components';
+
+type BlockProps = {
+  someProp: unknown;
+  otherProp: unknown;
+};
+
+const Block = styled.div.withConfig<BlockProps>({
+  shouldForwardProp: prop => !Boolean(prop),
+})``;
+```
+
+### Дефолтные конфиги
+
+Метод `shouldForwardProp` из пакета `@styled-system/should-forward-prop`.
+
+<Canvas className='canvas'>
+  <Story id='utils-styled-config--system' />
+</Canvas>
+
+эквивалент
+
+```tsx
+import shouldForwardProp from '@styled-system/should-forward-prop';
+import styled from 'styled-components';
+
+type BlockProps = { ... };
+
+const Block = styled.div.withConfig<BlockProps>({
+  shouldForwardProp: prop => shouldForwardProp(prop),
+})``;
+```

@@ -1,0 +1,157 @@
+import { Canvas, Meta, Story } from '@storybook/addon-docs/blocks';
+
+<Meta title='Utils / styled / system' />
+
+# styled.system
+
+Синтаксический сахар над методами [compose, style](https://styled-system.com/custom-props) библиотеки `styled-system`.
+
+## Использование
+
+```tsx
+const styles = styled.system(...);
+
+const Block = styled('div', styles);
+```
+
+## Возможности
+
+### Библиотечные стили
+
+Используются дефолтные методы `styled-system` по ключу.
+
+<Canvas className='canvas'>
+  <Story id='utils-styled-system--system-styles' />
+</Canvas>
+
+эквивалент
+
+```tsx
+import styled from 'styled-components';
+import { compose, border, color, space } from 'styled-system';
+
+import type { BorderProps, ColorProps, SpaceProps } from 'styled-system';
+
+type BlockProps = BorderProps & ColorProps & SpaceProps;
+
+const Block = styled.div<BlockProps>(compose(border, color, space));
+```
+
+### Небиблиотечные стили
+
+CSS-стили, не реализованные по умолчанию в `styled-system`.
+
+<Canvas className='canvas'>
+  <Story id='utils-styled-system--non-system-styles' />
+</Canvas>
+
+эквивалент
+
+```tsx
+import styled from 'styled-components';
+import { compose, style } from 'styled-system';
+
+import type { Property } from 'csstype';
+import type { ResponsiveValue } from 'styled-system';
+
+type BlockProps = {
+  textDecoration?: ResponsiveValue<Property.TextDecoration>;
+  textTransform?: ResponsiveValue<Property.TextTransform>;
+};
+
+const textDecoration = style({
+  prop: 'textDecoration',
+  cssProperty: 'textDecoration',
+});
+
+const textTransform = style({
+  prop: 'textTransform',
+  cssProperty: 'textTransform',
+});
+
+const Block = styled.div<BlockProps>(compose(textDecoration, textTransform));
+```
+
+### Дополнительные стили
+
+Предустановленные дополнительные стили:
+
+- `bgGradient` - градиант фона,
+- `boxShadow` - тень нетекстового элемента,
+- `gap` - [отступы](https://developer.mozilla.org/ru/docs/Web/CSS/gap)
+  между столбцами и строками на основе коэффициента `space`.
+
+<Canvas className='canvas'>
+  <Story id='utils-styled-system--additional-styles' />
+</Canvas>
+
+эквивалент
+
+```tsx
+import styled from 'styled-components';
+import { compose, system } from 'styled-system';
+
+import type { DefaultTheme } from 'styled-components';
+import type { ResponsiveValue, ThemeValue } from 'styled-system';
+
+type RequiredTheme = Required<DefaultTheme>;
+
+type BlockProps = {
+  bgGradient?: ResponsiveValue<ThemeValue<'colors', RequiredTheme>, RequiredTheme>;
+};
+
+const bgGradient = system({
+  bgGradient: {
+    property: 'backgroundImage',
+    scale: 'colors',
+  },
+});
+
+const Block = styled.div<BlockProps>(compose(bgGradient));
+```
+
+### Смесь всех типов стилей
+
+<Canvas className='canvas'>
+  <Story id='utils-styled-system--mixed-styles' />
+</Canvas>
+
+эквивалент
+
+```tsx
+import styled from 'styled-components';
+import { compose, style, system, space } from 'styled-system';
+
+import type { Property } from 'csstype';
+import type { DefaultTheme } from 'styled-components';
+import type { ResponsiveValue, ThemeValue, SpaceProps } from 'styled-system';
+
+type RequiredTheme = Required<DefaultTheme>;
+
+type BlockProps = SpaceProps & {
+  bgGradient?: ResponsiveValue<ThemeValue<'colors', RequiredTheme>, RequiredTheme>;
+  textDecoration?: ResponsiveValue<Property.TextDecoration>;
+};
+
+const bgGradient = system({
+  bgGradient: {
+    property: 'backgroundImage',
+    scale: 'colors',
+  },
+});
+
+const textDecoration = style({
+  prop: 'textDecoration',
+  cssProperty: 'textDecoration',
+});
+
+const Block = styled.div<BlockProps>(compose(bgGradient, space, textDecoration));
+```
+
+### Все библиотечные стили
+
+> Техническая сторя больше для тестирования типизации библиотечных стилей, чем для демонстрации.
+
+<Canvas className='canvas'>
+  <Story id='utils-styled-system--full-system-styles' />
+</Canvas>

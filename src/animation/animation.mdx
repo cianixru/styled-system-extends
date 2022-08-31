@@ -1,0 +1,77 @@
+import { Canvas, Meta, Story } from '@storybook/addon-docs/blocks';
+
+<Meta title='Utils / styled / animation' />
+
+# styled.animation
+
+Синтаксический сахар над методом [keyframes](https://styled-components.com/docs/basics#animations) библиотеки `styled-components`.
+
+## Использование
+
+```tsx
+const first = styled.animation(keyframes, animationStyles);
+const second = styled.animation(keyframes, animationStyles);
+
+const Block = styled('div', first, second);
+```
+
+## Возможности
+
+### Single
+
+<Canvas className='canvas'>
+  <Story id='utils-styled-animation--single' />
+</Canvas>
+
+эквивалент
+
+```tsx
+import styled, { keyframes } from 'styled-components';
+
+const fadeIn = keyframes({
+  '0%': {
+    opacity: 0,
+  },
+  '100%': {
+    opacity: 1,
+  },
+});
+
+const Block = styled('div')`
+  animation: ${fadeIn} 1s ease-out;
+`;
+```
+
+### Multiple
+
+<Canvas className='canvas'>
+  <Story id='utils-styled-animation--multiple' />
+</Canvas>
+
+эквивалент
+
+```tsx
+import styled, { keyframes } from 'styled-components';
+
+const fadeIn = keyframes({
+  '0%': {
+    opacity: 0,
+  },
+  '100%': {
+    opacity: 1,
+  },
+});
+
+const rotate = keyframes({
+  from: {
+    transform: 'rotateX(0deg)',
+  },
+  to: {
+    transform: 'rotateX(360deg)',
+  },
+});
+
+const Block = styled('div')`
+  animation: ${fadeIn} 1s ease-out, ${rotate} 10s linear infinite;
+`;
+```

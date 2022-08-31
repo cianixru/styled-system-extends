@@ -1,0 +1,102 @@
+import { Canvas, Meta, Story } from '@storybook/addon-docs/blocks';
+
+<Meta title='Utils / styled / attrs' />
+
+# styled.attrs
+
+Синтаксический сахар над методом [attrs](https://styled-components.com/docs/api#attrs) библиотеки `styled-components`.
+
+> Если `attrs` будет вызван несколько раз, то будут применяться последние переданные атрибуты.
+
+## Использование
+
+### Свойства
+
+```tsx
+type SomeComponentProps = { ... };
+
+const attrs = styled.attrs<SomeComponentProps>({ ... });
+
+const Block = styled(SomeComponent, attrs);
+```
+
+### Cвойства на основе props компонента
+
+```tsx
+type AttrsProps = { ... };
+type SomeComponentProps = { ... };
+
+const attrs = styled.attrs((props: AttrsProps): SomeComponentProps => ({ ... }));
+
+const Block = styled(SomeComponent, attrs);
+```
+
+## Примеры
+
+### Без использования props компонента
+
+<Canvas className='canvas'>
+  <Story id='utils-styled-attrs--without-props' />
+</Canvas>
+
+эквивалент
+
+```tsx
+import styled from 'styled-components';
+
+type InputProps = Pick<React.InputHTMLAttributes<HTMLInputElement>, 'type' | 'defaultChecked'>;
+
+const Field = styled.input.attrs<InputProps>({
+  type: 'checkbox',
+  defaultChecked: true,
+})({});
+```
+
+### С использованием props компонента
+
+<Canvas className='canvas'>
+  <Story id='utils-styled-attrs--with-props' />
+</Canvas>
+
+эквивалент
+
+```tsx
+import styled from 'styled-components';
+
+type InputProps = Pick<React.InputHTMLAttributes<HTMLInputElement>, 'type' | 'placeholder'>;
+type FieldProps = { isNumber?: boolean };
+
+const getProps = ({ isNumber }: FieldProps): InputProps => ({
+  type: isNumber ? 'number' : 'text',
+  placeholder: isNumber ? 'Введите число' : 'Введите текст',
+});
+
+const Field = styled.input.attrs<InputProps, FieldProps>(getProps)({});
+```
+
+### Стилизация через props
+
+С использованием `styled.system` и типа `InferProps`.
+
+```tsx
+import type { InferProps } from '~utils';
+```
+
+<Canvas className='canvas'>
+  <Story id='utils-styled-attrs--style-props' />
+</Canvas>
+
+эквивалент
+
+```tsx
+import styled from 'styled-components';
+import { compose, color } from 'styled-system';
+import type { ColorProps } from 'styled-components';
+
+type BaseProps = ColorProps;
+
+const styleProps = compose(color);
+const Base = styled.div<BaseProps>(styleProps);
+
+const Block = styled(Base).attrs<BaseProps>({ bg: 'mangoTango' })({});
+```

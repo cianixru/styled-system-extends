@@ -1,0 +1,61 @@
+import { Canvas, Meta, Story } from '@storybook/addon-docs/blocks';
+
+<Meta title='Utils / styled / protect' />
+
+# styled.protect
+
+Блокирует возможность стилизации компонента из вне (через `className`).
+
+## Использование
+
+```tsx
+const ProtectedSomeComponent = styled.protect(SomeComponent);
+```
+
+## Пример
+
+### React component
+
+<Canvas className='canvas'>
+  <Story id='utils-styled-protect--react-component' />
+</Canvas>
+
+эквивалент
+
+```tsx
+import styled from 'styled-components';
+
+type ComponentProps = React.HTMLAttributes<HTMLDivElement>;
+
+const Component: React.FC<ComponentProps> = props => (
+  <div style={{ border: '10px solid gray' }} {...props} />
+);
+
+const ProtectedComponent: React.FC<ComponentProps> = ({ className: _, style: __, ...props }) => (
+  <Component {...props} />
+);
+
+const Block = styled(ProtectedComponent);
+```
+
+### Styled component
+
+<Canvas className='canvas'>
+  <Story id='utils-styled-protect--styled-component' />
+</Canvas>
+
+эквивалент
+
+```tsx
+import styled from 'styled-components';
+
+type StyledComponentProps = React.HTMLAttributes<HTMLDivElement>;
+
+const StyledComponent = styled.div<StyledComponentProps>({ background: 'gray' });
+
+const ProtectedStyledComponent: React.FC<StyledComponentProps> = ({ className: _, style: __, ...props }) => (
+  <StyledComponent {...props} />
+);
+
+const Block = styled(ProtectedStyledComponent);
+```

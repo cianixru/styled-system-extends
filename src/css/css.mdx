@@ -1,0 +1,274 @@
+import { Canvas, Meta, Story } from '@storybook/addon-docs/blocks';
+
+<Meta title='Utils / styled / css' />
+
+# styled.css
+
+Синтаксический сахар над методом [css](https://github.com/styled-system/styled-system/tree/master/packages/css) из пакета `@styled-system/css`.
+
+## Использование
+
+### Стили
+
+```tsx
+const styles = styled.css(...);
+
+const Block = styled('div', styles);
+```
+
+### Стили на основе props компонента
+
+```tsx
+const styles = styled.css<Props>(props => ({ ... }));
+
+const Block = styled('div', styles);
+```
+
+## Возможности
+
+### Стили
+
+<Canvas className='canvas'>
+  <Story id='utils-styled-css--styles' />
+</Canvas>
+
+эквивалент
+
+```tsx
+import styled, { css } from 'styled-components';
+
+const styles = css({ width: '70%' });
+
+const Block = styled.div(styles);
+```
+
+### Стили на основе props
+
+Хотя набор стилей можно декомпозировать, тип Props лучше описывать как единый тип.
+
+<Canvas className='canvas'>
+  <Story id='utils-styled-css--styles-by-props' />
+</Canvas>
+
+эквивалент
+
+```tsx
+import styled, { css } from 'styled-components';
+
+type Props = { fullWidth?: boolean };
+
+const styles = css<Props>(({ fullWidth }) => ({ width: fullWidth ? '100%' : '70%' }));
+
+const Block = styled.div(styles);
+```
+
+#### Темизация
+
+Определение значения стиля на основе ключа, коэффициента, breakpoint-а и т.д. темы.
+
+<Canvas className='canvas'>
+  <Story id='utils-styled-css--theme' />
+</Canvas>
+
+эквивалент
+
+```tsx
+import { css } from '@styled-system/css';
+import styled from 'styled-components';
+
+const styles = css({
+  color: 'mangoTango',
+  padding: [8, 2, 4, 6],
+  border: '1px solid',
+  borderColor: 'turbo',
+});
+
+const Block = styled.div(styles);
+```
+
+### Алиасы
+
+<Canvas className='canvas'>
+  <Story id='utils-styled-css--alias' />
+</Canvas>
+
+эквивалент
+
+```tsx
+import { css } from '@styled-system/css';
+import styled from 'styled-components';
+
+const styles = css({
+  bg: 'dune',
+  px: 4,
+  py: 6,
+});
+
+const Block = styled.div(styles);
+```
+
+### Селекторы
+
+> Для оптимизации вычисления типов использование селекторов отличается от аналогичных в методе `css` библиотек `styled-components` и `styled-system`.
+
+#### Базовый
+
+<Canvas className='canvas'>
+  <Story id='utils-styled-css--selector-base' />
+</Canvas>
+
+эквивалент
+
+```tsx
+import styled, { css } from 'styled-components';
+
+type BlockProps = { isActive?: boolean };
+
+const styles = ({ isActive }: BlockProps) => css({
+  '> *': {
+    bg: isActive ? 'turbo' : 'dune',
+  },
+  '> :not(:last-child)': {
+    bg: 'mangoTango',
+  },
+});
+
+const Component = styled.div<BlockProps>(styles);
+```
+
+#### Компоненты
+
+<Canvas className='canvas'>
+  <Story id='utils-styled-css--selector-component' />
+</Canvas>
+
+эквивалент
+
+```tsx
+import styled, { css } from 'styled-components';
+
+type BlockProps = { isActive?: boolean };
+
+const First = styled.div({});
+
+const Last = styled.div({});
+
+const styles = ({ isActive }: BlockProps) => css({
+  [First]: {
+    bg: isActive ? 'turbo' : 'dune',
+  },
+  [Last]: {
+    bg: 'mangoTango',
+  },
+});
+
+const Component = styled.div<BlockProps>(styles);
+```
+
+#### Псевдоклассы и Псевдоэлементы
+
+<Canvas className='canvas'>
+  <Story id='utils-styled-css--selector-pseudos' />
+</Canvas>
+
+эквивалент
+
+```tsx
+import styled, { css } from 'styled-components';
+
+type BlockProps = { affex?: string };
+
+const styles = ({ affex }: BlockProps) => css({
+  border: '10px solid',
+  borderColor: 'dune',
+  ':hover': {
+    borderColor: 'scarlet',
+  },
+  '::after': {
+    content: `"${affex}"`,
+    display: 'block',
+    bg: 'mangoTango',
+  },
+});
+
+const Component = styled.div<BlockProps>(styles);
+```
+
+#### Смесь селекторов
+
+<Canvas className='canvas'>
+  <Story id='utils-styled-css--selector-mixed' />
+</Canvas>
+
+эквивалент
+
+```tsx
+import styled, { css } from 'styled-components';
+
+type ChildProps = { isActive?: boolean };
+
+const Child = styled.div<ChildProps>({});
+
+const lastChildContent = `"
+  Laboriosam, nesciunt iusto eveniet sed consectetur magni quisquam sapiente voluptatum
+  praesentium voluptates quis placeat pariatur veritatis mollitia molestias molestiae optio
+  corporis? Sit?
+"`;
+
+const styles = ({ isActive }: ChildProps) => css({
+  [Child]: {
+    border: '1px solid',
+    bg: isActive ? 'turbo' : 'dune',
+    ':first-child': {
+      borderColor: 'mangoTango',
+    },
+    ':nth-child(2)': {
+      borderColor: 'scarlet',
+      ':hover': {
+        bg: isActive ? 'turbo' : 'alabaster',
+      },
+    },
+    ':last-child': {
+      borderColor: 'salat',
+      '::before': {
+        content: lastChildContent,
+        display: 'block',
+      },
+    },
+  },
+});
+
+const Component = styled.div(styles);
+```
+
+### Вложенность
+
+#### В функциях, возвращающих стили на основе props
+
+<Canvas className='canvas'>
+  <Story id='utils-styled-css--nesting-styles-by-props' />
+</Canvas>
+
+эквивалент
+
+```tsx
+import { css } from '@styled-system/css';
+import styled from 'styled-components';
+
+type Props = { isActive?: boolean; bg?: string; };
+
+const active = css({ background: 'yellow' });
+const inactive = ({ bg }: Partial<Props>) => css({ bg });
+
+const Block = styled('div', ({ isActive, ...props }) => (isActive ? active : inactive(props)));
+```
+
+### Дополнения
+
+#### Типография
+
+Необходимо для задания конкретного значения типографии без использования `variant` и/или без подключения к теме напрямую.
+
+<Canvas className='canvas'>
+  <Story id='utils-styled-css--typography' />
+</Canvas>
